@@ -2,7 +2,12 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItem</item>
         <!-- Customize your theme here. -->
+    </style>
+
+    <style name="SpinnerDropDownItem" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:gravity">center</item>
     </style>
 
 </resources>
