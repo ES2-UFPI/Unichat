@@ -1,9 +1,14 @@
 import React, { Component } from "react"
-import { View, Text, TextInput, StyleSheet, Picker, Alert } from "react-native"
+import { View, Text, TextInput, StyleSheet, Picker, Alert, YellowBox } from "react-native"
 import LinearGradient from "react-native-linear-gradient"
-import TextInputMask from "react-native-text-input-mask"
+import { TextInputMask } from "react-native-masked-text"
 import firebase from "react-native-firebase"
 import countryList from "../../assets/country_dials/dials"
+
+YellowBox.ignoreWarnings([
+  "Warning: componentWillMount is deprecated",
+  "Warning: componentWillReceiveProps is deprecated",
+])
 
 export default class Auth extends Component {
   static navigationOptions = {}
@@ -49,8 +54,6 @@ export default class Auth extends Component {
   }
 
   render() {
-    // This is temporary (just hiding the warnings)
-    console.disableYellowBox = true
     const { navigation } = this.props
     const { countries, countryCode, loading, authenticated } = this.state
     
@@ -71,8 +74,8 @@ export default class Auth extends Component {
                 }
               >
                 <Picker.Item label="Escolha seu País" value="" />
-                {countries.map(item => (
-                  <Picker.Item label={`${item.flag} ${item.name} (${item.dial_code})`} value={item.dial_code} />)
+                {countries.map((item, key)=> (
+                  <Picker.Item label={`${item.flag} ${item.name} (${item.dial_code})`} value={item.dial_code} key={key}/>)
                 )}
               </Picker>
             </View>
@@ -87,17 +90,22 @@ export default class Auth extends Component {
               refInput={ref => {
                 this.input = ref
               }}
-              onChangeText={extracted => {
-                this.setState({ phoneNumber: `${countryCode}${extracted}` })
+              type="cel-phone"
+              options={{
+                maskType: "BRL",
+                withDDD: true,
+                dddMask: "(99)"
               }}
-              mask="([00]) [00000]-[0000]"
-              keyboardType="number-pad"
+              onChangeText={text => {
+                this.setState({phoneNumber: `${countryCode}${text}`})
+              }}
             />
           </View>
           <LinearGradient
             colors={["#547BF0", "#6AC3FB"]}
             style={styles.button}
-          >
+            onPress={() => this.signIn()}
+          > 
             <Text style={styles.textButton} onPress={() => this.signIn()}>
               Enviar
             </Text>
