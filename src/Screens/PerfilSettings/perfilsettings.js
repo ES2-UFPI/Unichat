@@ -8,6 +8,7 @@ import {View,
         StyleSheet} from "react-native"
 import LinearGradient from "react-native-linear-gradient"
 import nouser from  "../../assets/imgs/nouser.png"
+import languagelist from "../../assets/languages/languages"
 
 export default class PerfilSettings extends Component{
     static navigationoptions = {}
@@ -31,6 +32,8 @@ export default class PerfilSettings extends Component{
                 </View>
                 
                 <View style={styles.viewtext}>
+
+
                     <View>
                         <Text style={styles.labeltext}>
                         Nome:
@@ -38,18 +41,14 @@ export default class PerfilSettings extends Component{
                         <TextInput style={styles.entrada}>
                     
                         </TextInput>
-                    </View>
-
-                    <View>
+                       
                         <Text style={styles.labeltext}>
                             Email:
                         </Text>
                         <TextInput style={styles.entrada}>
-                    
                         </TextInput>
-                    </View>
 
-                    <View>
+
                         <Text style={styles.labeltext}>
                         Idiomas:
                         </Text>
@@ -62,6 +61,7 @@ export default class PerfilSettings extends Component{
 
                         </Picker>
                         </View>
+                        
                     </View>
 
 
@@ -106,8 +106,8 @@ const styles = StyleSheet.create({
     },
     imagem:{
         marginTop: 30,
-        width: 150,
-        height: 150,
+        width: 100,
+        height: 100,
         borderRadius: 50,
         borderBottomRightRadius: 50,
         borderBottomLeftRadius: 50,
