@@ -4,14 +4,16 @@ import {View,
         Text,
         TextInput,
         Image,
-        Icon,
         TouchableOpacity,
         Picker,
         StyleSheet} from "react-native"
+import { Icon } from "react-native-elements"        
+import shortid from "shortid"
 import LinearGradient from "react-native-linear-gradient"
 import nouser from  "../../assets/imgs/nouser.png"
-// import editperfil from "../../assets/imgs/editperfil.ico"
-// import languagelist from "../../assets/languages/languages"
+
+// import edit from "../../assets/imgs/edit.ico"
+import languagelist from "../../assets/languages/languages"
 
 export default class PerfilSettings extends Component{
     static navigationoptions = {}
@@ -19,12 +21,18 @@ export default class PerfilSettings extends Component{
     constructor() {
         super()
         this.state = {
-            language: ""
+            language: [],
+            code: ""
         }
       }
-      
+
+      componentDidMount() {
+        this.setState({language: languagelist})
+
+      }
+
     render(){
-        const {language} = this.state
+        const {language, code} = this.state
 
         return(
             <View style={styles.container}>
@@ -33,7 +41,7 @@ export default class PerfilSettings extends Component{
                 <View>
                     <Image source={nouser}  style={styles.imagem}/>
                     <TouchableOpacity style={styles.roundbutton}>
-        
+                        <Icon name="create" />
                     </TouchableOpacity>
                 </View>
                 
@@ -61,9 +69,16 @@ export default class PerfilSettings extends Component{
                         <View style={styles.languagePicker}>
                         <Picker 
                             
-                            selectedValue={language}
+                            selectedValue={code}
                             onValueChange={itemValue =>
-                            this.setState({ language: itemValue })}>
+                            this.setState({ code: itemValue })}>
+                             <Picker.Item label="Escolha seu idioma" value="" />
+                             {language.map(item => (
+                                <Picker.Item
+                                    label={`${item.name}`}
+                                    value={item.code} 
+                                    key={shortid.generate()}
+                                /> ))}
 
                         </Picker>
                         </View>
@@ -173,6 +188,8 @@ const styles = StyleSheet.create({
         height:40,
         backgroundColor:"#6AC3FB",
         borderRadius:20,
+        marginLeft: 80,
+        marginBottom: 20
       }
 
 })
