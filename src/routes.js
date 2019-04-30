@@ -8,7 +8,10 @@ import Chat from "~/Screens/Chat/chat"
 const appStackNavigator = createStackNavigator(
   {
     PerfilSettings:{
-      screen: PerfilSettings
+      screen: PerfilSettings,
+      navigationOptions: {
+        header: null
+      }
     }, 
     AuthScreen: {
       screen: Auth,

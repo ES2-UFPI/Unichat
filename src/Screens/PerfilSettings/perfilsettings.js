@@ -4,11 +4,14 @@ import {View,
         Text,
         TextInput,
         Image,
+        Icon,
+        TouchableOpacity,
         Picker,
         StyleSheet} from "react-native"
 import LinearGradient from "react-native-linear-gradient"
 import nouser from  "../../assets/imgs/nouser.png"
-import languagelist from "../../assets/languages/languages"
+// import editperfil from "../../assets/imgs/editperfil.ico"
+// import languagelist from "../../assets/languages/languages"
 
 export default class PerfilSettings extends Component{
     static navigationoptions = {}
@@ -29,6 +32,9 @@ export default class PerfilSettings extends Component{
 
                 <View>
                     <Image source={nouser}  style={styles.imagem}/>
+                    <TouchableOpacity style={styles.roundbutton}>
+        
+                    </TouchableOpacity>
                 </View>
                 
                 <View style={styles.viewtext}>
@@ -69,7 +75,7 @@ export default class PerfilSettings extends Component{
                 </View>
 		            
 
-                    <View>
+
                     <LinearGradient
                         colors={["#547BF0", "#6AC3FB"]}
                         style={styles.button}
@@ -78,7 +84,6 @@ export default class PerfilSettings extends Component{
                             Avançar
                         </Text>
                     </LinearGradient>
-                    </View>
 
                 
 
@@ -103,11 +108,12 @@ const styles = StyleSheet.create({
     viewtext:{
         justifyContent: "center",
         alignItems: "center",
+        marginTop: 15
     },
     imagem:{
-        marginTop: 30,
-        width: 100,
-        height: 100,
+        marginTop: 50,
+        width: 125,
+        height: 125,
         borderRadius: 50,
         borderBottomRightRadius: 50,
         borderBottomLeftRadius: 50,
@@ -121,7 +127,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: "bold",
         color: "black",
-        marginTop: 40
+        marginTop: 50
     },
     languagePicker: {
         width: 250,
@@ -130,7 +136,7 @@ const styles = StyleSheet.create({
       },
     button: {
         width: 280,
-        height: 0,
+        height: 50,
         borderRadius: 20,
         justifyContent: "center",
         marginTop: 40,
@@ -144,18 +150,29 @@ const styles = StyleSheet.create({
       labeltext:{
         fontSize: 16,
         fontWeight: "bold",
-        color: "black" 
+        color: "black",
+        marginTop: 5 
       },
       entrada: {
           width: 250,
-          height: 40,
+          height: 30,
           marginRight: 40,
-          marginTop: 10,
+          marginTop: 5,
           marginBottom: 10,
           borderBottomWidth: 2,
           textAlign: "center",
           fontSize: 18,
           borderColor: "#6AC3FB"
+      },
+      roundbutton:{
+        borderWidth:1,
+        borderColor:"#6AC3FB",
+        alignItems: "center",
+        justifyContent:"center",
+        width:40,
+        height:40,
+        backgroundColor:"#6AC3FB",
+        borderRadius:20,
       }
 
 })
