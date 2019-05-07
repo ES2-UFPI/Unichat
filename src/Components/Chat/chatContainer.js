@@ -1,9 +1,15 @@
 import React from "react"
 
-import { View } from "react-native"
+import { View, Alert, StyleSheet } from "react-native"
 import shortid from "shortid"
 import { ScrollView } from "react-native-gesture-handler"
-
+import {
+  Menu,
+  MenuProvider,
+  MenuTrigger,
+  MenuOption,
+  MenuOptions
+} from "react-native-popup-menu"
 import Message from "../mensagem"
 
 const getTime = date => {
@@ -45,16 +51,28 @@ const Chat = props => {
       >
         {messages.map(message => {
           return (
-            <Message
-              key={shortid.generate()}
-              content={
-                message.source === "1"
-                  ? message.content
-                  : message.contentTranslated
-              }
-              date={getTime(message.date)}
-              source={message.source}
-            />
+            <MenuProvider>
+              <Menu style={styles.menu}>
+                <MenuTrigger triggerOnLongPress="true">
+                  <Message
+                    key={shortid.generate()}
+                    content={
+                      message.source === "1"
+                        ? message.content
+                        : message.contentTranslated
+                    }
+                    date={getTime(message.date)}
+                    source={message.source}
+                  />
+                </MenuTrigger>
+                <MenuOptions>
+                  <MenuOption
+                    onSelect={() => Alert("Traduzir")}
+                    text="Traduzir para idioma original"
+                  />
+                </MenuOptions>
+              </Menu>
+            </MenuProvider>
           )
         })}
       </ScrollView>
@@ -63,3 +81,9 @@ const Chat = props => {
 }
 
 export default Chat
+const styles = StyleSheet.create({
+  menu: {
+    marginLeft: 150,
+    marginTop: 40
+  }
+})
