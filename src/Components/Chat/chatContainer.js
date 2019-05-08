@@ -48,6 +48,10 @@ const Chat = props => {
                     onSelect={() => Alert.alert("Traduzir")}
                     text="Traduzir para idioma original"
                   />
+                  <MenuOption
+                    onSelect={() => Alert.alert("Excluir pro JP")}
+                    text="Excluir"
+                  />
                 </MenuOptions>
               </Menu>
             </MenuProvider>
