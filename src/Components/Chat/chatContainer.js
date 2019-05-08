@@ -67,7 +67,7 @@ const Chat = props => {
                 </MenuTrigger>
                 <MenuOptions>
                   <MenuOption
-                    onSelect={() => Alert("Traduzir")}
+                    onSelect={() => Alert.alert("Traduzir")}
                     text="Traduzir para idioma original"
                   />
                 </MenuOptions>
