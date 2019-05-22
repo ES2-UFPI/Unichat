@@ -8,8 +8,11 @@ import {
   Switch
 } from "react-native"
 import { Icon } from "react-native-elements"
+import firebase from "react-native-firebase"
 
-const configBody = () => {
+const configBody = props => {
+  const { navigation } = props
+
   return (
     <View style={styles.elevationBody}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -79,7 +82,23 @@ const configBody = () => {
             <Text style={styles.touchableStyle}>Sobre</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            firebase.auth().signOut()
+            const userid = firebase.auth().currentUser.uid
+            firebase
+              .firestore()
+              .collection("users")
+              .doc(userid)
+              .delete()
+
+            firebase
+              .storage()
+              .ref(`profile_pics/${userid}`)
+              .delete()
+            navigation.navigate("AuthScreen")
+          }}
+        >
           <Text style={styles.touchableStyleExit}>Excluir Conta</Text>
         </TouchableOpacity>
       </ScrollView>
