@@ -5,7 +5,8 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  Switch
+  Switch,
+  Alert
 } from "react-native"
 import { Icon } from "react-native-elements"
 import firebase from "react-native-firebase"
@@ -84,18 +85,22 @@ const configBody = props => {
         </View>
         <TouchableOpacity
           onPress={() => {
-            firebase.auth().signOut()
             const userid = firebase.auth().currentUser.uid
             firebase
               .firestore()
               .collection("users")
               .doc(userid)
               .delete()
-
+              .catch(error => {
+                Alert.alert(error.message)
+              })
             firebase
               .storage()
               .ref(`profile_pics/${userid}`)
               .delete()
+              .catch(error => {
+                Alert.alert(error.message)
+              })
             navigation.navigate("AuthScreen")
           }}
         >
