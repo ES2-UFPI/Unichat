@@ -9,7 +9,8 @@ import {
   TouchableOpacity,
   BackHandler,
   Alert,
-  AppState
+  AppState,
+  StatusBar
 } from "react-native"
 import { ListItem, Icon } from "react-native-elements"
 import LinearGradient from "react-native-linear-gradient"
@@ -40,12 +41,13 @@ export default class Conversas extends Component {
   }
 
   async componentDidMount() {
-    this.listener = this.ref.onSnapshot(async () => {
-      const username = await AsyncStorage.getItem("@username")
-      const profileImageUrl = await AsyncStorage.getItem("@profileImageUrl")
-      this.setState({ myName: username, myPicture: profileImageUrl })
-    })
     const { navigation } = this.props
+    const { isSerchable } = this.state
+
+    const username = await AsyncStorage.getItem("@username")
+    const profileImageUrl = await AsyncStorage.getItem("@profileImageUrl")
+    this.setState({ myName: username, myPicture: profileImageUrl })
+
     const notificationOpen = await firebase
       .notifications()
       .getInitialNotification()
@@ -53,6 +55,9 @@ export default class Conversas extends Component {
       const { notification } = notificationOpen
       const { conversaId } = notification.data
       notification.android.setGroup("unichat")
+      notification.android.setPriority(
+        firebase.notifications.Android.Priority.High
+      )
       this.ref
         .collection("conversas")
         .doc(conversaId)
@@ -63,35 +68,40 @@ export default class Conversas extends Component {
           navigation.navigate("ChatScreen", { item })
         })
     }
+
     this.ref.update({
       online: true
     })
+
     NetInfo.isConnected.addEventListener(
       "connectionChange",
       this.handleConnectivityChange
     )
+
     AppState.addEventListener("change", this.handleAppStateChange)
     BackHandler.addEventListener("hardwareBackPress", this.handleBackPress)
     this.getData()
     this.willBlur = navigation.addListener("willBlur", () => {
+      if (isSerchable)
+        this.setState(prevState => ({
+          arrayholder: prevState.conversas,
+          isSerchable: false,
+          text: ""
+        }))
+    })
+  }
+
+  componentWillUnmount() {
+    const { isSerchable } = this.state
+    BackHandler.removeEventListener("hardwareBackPress", this.handleBackPress)
+    this.unsubscribe()
+    this.willBlur.remove()
+    if (isSerchable)
       this.setState(prevState => ({
         arrayholder: prevState.conversas,
         isSerchable: false,
         text: ""
       }))
-    })
-  }
-
-  componentWillUnmount() {
-    BackHandler.removeEventListener("hardwareBackPress", this.handleBackPress)
-    this.unsubscribe()
-    this.listener()
-    this.willBlur.remove()
-    this.setState(prevState => ({
-      arrayholder: prevState.conversas,
-      isSerchable: false,
-      text: ""
-    }))
   }
 
   handleConnectivityChange = isConnected => {
@@ -301,6 +311,7 @@ export default class Conversas extends Component {
       )
     return (
       <View style={styles.container}>
+        <StatusBar backgroundColor="#FFF" barStyle="dark-content" />
         {toolbar}
         <FlatList
           data={arrayholder}

@@ -31,11 +31,11 @@ return (exports.sendPushNotification = functions.firestore
         },
         notification: {
           title: contactName,
-          body: contentTranslated,
+          body: content,
           sound: "default",
-          android_channel_id: "main-channel",
-          collapseKey: "unichat",
-          group: "unichat"
+          priority: "high",
+          show_in_foreground: "true",
+          content_available: "true"
         }
       }
 
