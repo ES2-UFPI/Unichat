@@ -90,6 +90,26 @@ const configBody = props => {
               .firestore()
               .collection("users")
               .doc(userid)
+              .collection("conversas")
+              .onSnapshot(querySnapshot => {
+                querySnapshot.forEach(doc => {
+                  firebase
+                    .firestore()
+                    .collection("users")
+                    .doc(userid)
+                    .collection("conversas")
+                    .doc(doc.id)
+                    .delete()
+                    .catch(error => {
+                      Alert.alert(error.message)
+                    })
+                })
+              })
+
+            firebase
+              .firestore()
+              .collection("users")
+              .doc(userid)
               .delete()
               .catch(error => {
                 Alert.alert(error.message)
