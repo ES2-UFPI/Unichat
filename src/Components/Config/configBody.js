@@ -99,9 +99,33 @@ const configBody = props => {
                     .doc(userid)
                     .collection("conversas")
                     .doc(doc.id)
+                    .collection("messages")
+                    .onSnapshot(qrySnapshotMsg => {
+                      qrySnapshotMsg.forEach(docMsg => {
+                        firebase
+                          .firestore()
+                          .collection("users")
+                          .doc(userid)
+                          .collection("conversas")
+                          .doc(doc.id)
+                          .collection("messages")
+                          .doc(docMsg.id)
+                          .delete()
+                          .catch(() => {
+                            Alert.alert("Erro na exclusão de mensagens")
+                          })
+                      })
+                    })
+
+                  firebase
+                    .firestore()
+                    .collection("users")
+                    .doc(userid)
+                    .collection("conversas")
+                    .doc(doc.id)
                     .delete()
-                    .catch(error => {
-                      Alert.alert(error.message)
+                    .catch(() => {
+                      Alert.alert("Erro na exclusão de Conversas")
                     })
                 })
               })
@@ -111,16 +135,19 @@ const configBody = props => {
               .collection("users")
               .doc(userid)
               .delete()
-              .catch(error => {
-                Alert.alert(error.message)
+              .catch(() => {
+                Alert.alert("Erro na exclusão de usuários")
               })
             firebase
               .storage()
               .ref(`profile_pics/${userid}`)
               .delete()
-              .catch(error => {
-                Alert.alert(error.message)
+              .catch(() => {
+                Alert.alert("Erro na exclusão de fotos")
               })
+
+            firebase.auth().currentUser.delete()
+            firebase.auth().signOut()
             navigation.navigate("AuthScreen")
           }}
         >
