@@ -28,9 +28,10 @@ export default class Conversas extends Component {
       arrayholder: [],
       myName: "",
       myPicture: null,
-      text: "",
-      appState: AppState.currentState
+      text: ""
     }
+
+    this.appState = AppState.currentState
 
     this.ref = firebase
       .firestore()
@@ -38,8 +39,50 @@ export default class Conversas extends Component {
       .doc(firebase.auth().currentUser.uid)
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    this.mounted = true
+    this.listener = this.ref.onSnapshot(async () => {
+      const username = await AsyncStorage.getItem("@username")
+      const profileImageUrl = await AsyncStorage.getItem("@profileImageUrl")
+      if (this.mounted)
+        this.setState({ myName: username, myPicture: profileImageUrl })
+    })
+
     const { navigation } = this.props
+
+    const channel = new firebase.notifications.Android.Channel(
+      "unichat",
+      "Unichat channel",
+      firebase.notifications.Android.Importance.Max
+    )
+      .setDescription("My app channel")
+      .setVibrationPattern([500])
+      .setLockScreenVisibility(firebase.notifications.Android.Visibility.Public)
+
+    firebase.notifications().android.createChannel(channel)
+
+    const notificationOpen = await firebase
+      .notifications()
+      .getInitialNotification()
+    if (notificationOpen) {
+      const { notification } = notificationOpen
+      const { conversaId } = notification.data
+      notification.android.setGroup("unichat")
+      notification.android.setPriority(
+        firebase.notifications.Android.Priority.High
+      )
+      notification.android.setChannelId("unichat")
+      notification.android.setVibrate([500])
+      this.ref
+        .collection("conversas")
+        .doc(conversaId)
+        .get()
+        .then(doc => {
+          const key = doc.id
+          const item = { key, ...doc.data() }
+          navigation.navigate("ChatScreen", { item })
+        })
+    }
     this.ref.update({
       online: true
     })
@@ -49,12 +92,6 @@ export default class Conversas extends Component {
     )
     AppState.addEventListener("change", this.handleAppStateChange)
     BackHandler.addEventListener("hardwareBackPress", this.handleBackPress)
-    this.ref.get().then(doc => {
-      this.setState({
-        myName: doc.data().username,
-        myPicture: doc.data().profile_img_url
-      })
-    })
     this.getData()
     this.willBlur = navigation.addListener("willBlur", () => {
       this.setState(prevState => ({
@@ -66,24 +103,25 @@ export default class Conversas extends Component {
   }
 
   componentWillUnmount() {
+    this.mounted = false
     BackHandler.removeEventListener("hardwareBackPress", this.handleBackPress)
+    this.unsubscribe()
+    this.listener()
     this.willBlur.remove()
     this.setState(prevState => ({
       arrayholder: prevState.conversas,
       isSerchable: false,
       text: ""
     }))
-    this.unsubscribe()
   }
 
   handleConnectivityChange = isConnected => {
     if (isConnected === true) {
-      const { appState } = this.state
-      if (appState === "active") {
+      if (this.appState === "active") {
         this.ref.update({
           online: true
         })
-      } else if (appState === "background") {
+      } else if (this.appState === "background") {
         this.ref.update({
           online: false,
           lastSeen: firebase.database().getServerTime()
@@ -93,14 +131,15 @@ export default class Conversas extends Component {
   }
 
   handleAppStateChange = nextAppState => {
-    const { appState } = this.state
-
-    if (appState.match(/inactive|background/) && nextAppState === "active") {
+    if (
+      this.appState.match(/inactive|background/) &&
+      nextAppState === "active"
+    ) {
       this.ref.update({
         online: true
       })
     } else if (
-      appState.match(/inative|active/) &&
+      this.appState.match(/inative|active/) &&
       nextAppState === "background"
     ) {
       this.ref.update({
@@ -108,7 +147,7 @@ export default class Conversas extends Component {
         lastSeen: firebase.database().getServerTime()
       })
     }
-    this.setState({ appState: nextAppState })
+    this.appState = nextAppState
   }
 
   handleBackPress = () => {

@@ -12,8 +12,10 @@ import {
   BackHandler,
   KeyboardAvoidingView,
   ActivityIndicator,
-  Keyboard
+  Keyboard,
+  Alert
 } from "react-native"
+import AsyncStorage from "@react-native-community/async-storage"
 import { Icon } from "react-native-elements"
 import firebase from "react-native-firebase"
 import shortid from "shortid"
@@ -31,10 +33,17 @@ export default class PerfilSettings extends Component {
       img: placeHolder[0],
       userName: "",
       eMail: "",
-      profileImageUrl: "",
-      disabled: true,
+      profileImageUrl:
+        "https://firebasestorage.googleapis.com/v0/b/unichat-35f13.appspot.com/o/profile-placeholder.png?alt=media&token=2cd02156-cb41-4142-8903-72abac4ddf3c",
+      disabled: false,
       uploading: false
     }
+    this.user = firebase.auth().currentUser
+    this.fcm = firebase.messaging()
+    this.ref = firebase
+      .firestore()
+      .collection("users")
+      .doc(this.user.uid)
   }
 
   componentDidMount() {
@@ -50,50 +59,52 @@ export default class PerfilSettings extends Component {
     return true
   }
 
-  confirmPerfilSettings = () => {
-    const { navigation } = this.props
-    const user = firebase.auth().currentUser
+  confirmPerfilSettings = async () => {
     const { userName, eMail, code, profileImageUrl } = this.state
+    const { navigation } = this.props
+    await this.fcm.requestPermission()
 
-    firebase
-      .firestore()
-      .collection("users")
-      .doc(user.uid)
-      .set({
-        phone: user.phoneNumber,
-        username: userName,
-        email: eMail,
-        language_code: code,
-        profile_img_url: profileImageUrl,
-        online: true,
-        lastSeen: ""
-      })
+    this.fcm.hasPermission().then(enabled => {
+      if (enabled) {
+        this.fcm.getToken().then(token => {
+          this.ref.set({
+            pushToken: token,
+            phone: this.user.phoneNumber,
+            username: userName,
+            email: eMail,
+            language_code: code,
+            profile_img_url: profileImageUrl,
+            online: true,
+            lastSeen: "",
+            notifications: true
+          })
+        })
+      }
+    })
+
+    await AsyncStorage.setItem("@username", userName)
+    await AsyncStorage.setItem("@profileImageUrl", profileImageUrl)
+
     navigation.navigate("Conversas")
   }
 
   uploadphotos = () => {
     const user = firebase.auth().currentUser
     const { img } = this.state
-    this.setState({ uploading: true })
+    this.setState({ uploading: true, disabled: true })
 
     firebase
       .storage()
       .ref(`profile_pics/${user.uid}`)
       .putFile(img.path)
       .on(firebase.storage.TaskEvent.STATE_CHANGED, snapshot => {
-        let state = {}
-        state = {
-          ...state
-        }
         if (snapshot.state === firebase.storage.TaskState.SUCCESS) {
-          state = {
+          this.setState({
             disabled: false,
             uploading: false,
             profileImageUrl: snapshot.downloadURL
-          }
+          })
         }
-
-        this.setState(state)
       })
   }
 
@@ -108,8 +119,15 @@ export default class PerfilSettings extends Component {
 
     ImagePicker.showImagePicker(options, response => {
       if (response.uri) {
-        this.setState({ img: response })
-        this.uploadphotos()
+        if (response.fileSize <= 600000) {
+          this.setState({ img: response })
+          this.uploadphotos()
+        } else {
+          Alert.alert(
+            "Erro",
+            "Selecione uma foto com tamanho inferior a 600 kB"
+          )
+        }
       }
     })
   }
@@ -117,7 +135,7 @@ export default class PerfilSettings extends Component {
   previewImage = () => {
     const { navigation } = this.props
     const { img } = this.state
-    navigation.navigate("PreviewImage", { img })
+    navigation.navigate("PreviewImage", { img, isLoggedin: false })
   }
 
   render() {
