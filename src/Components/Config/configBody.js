@@ -95,7 +95,6 @@ export default class configBody extends Component {
         Alert.alert("Erro na exclusão de fotos")
       })
 
-    firebase.auth().signOut()
     firebase.auth().currentUser.delete()
 
     navigation.navigate("AuthScreen")
