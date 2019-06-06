@@ -32,6 +32,75 @@ export default class configBody extends Component {
     })
   }
 
+  deleteUser = () => {
+    const { navigation } = this.props
+    const userid = firebase.auth().currentUser.uid
+    firebase
+      .firestore()
+      .collection("users")
+      .doc(userid)
+      .collection("conversas")
+      .onSnapshot(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          firebase
+            .firestore()
+            .collection("users")
+            .doc(userid)
+            .collection("conversas")
+            .doc(doc.id)
+            .collection("messages")
+            .onSnapshot(qrySnapshotMsg => {
+              qrySnapshotMsg.forEach(docMsg => {
+                firebase
+                  .firestore()
+                  .collection("users")
+                  .doc(userid)
+                  .collection("conversas")
+                  .doc(doc.id)
+                  .collection("messages")
+                  .doc(docMsg.id)
+                  .delete()
+                  .catch(() => {
+                    Alert.alert("Erro na exclusão de mensagens")
+                  })
+              })
+            })
+
+          firebase
+            .firestore()
+            .collection("users")
+            .doc(userid)
+            .collection("conversas")
+            .doc(doc.id)
+            .delete()
+            .catch(() => {
+              Alert.alert("Erro na exclusão de Conversas")
+            })
+        })
+      })
+
+    firebase
+      .firestore()
+      .collection("users")
+      .doc(userid)
+      .delete()
+      .catch(() => {
+        Alert.alert("Erro na exclusão de usuários")
+      })
+    firebase
+      .storage()
+      .ref(`profile_pics/${userid}`)
+      .delete()
+      .catch(() => {
+        Alert.alert("Erro na exclusão de fotos")
+      })
+
+    firebase.auth().signOut()
+    firebase.auth().currentUser.delete()
+
+    navigation.navigate("AuthScreen")
+  }
+
   switchHandler = () => {
     const { switchState } = this.state
     this.ref.update({ notifications: !switchState })
@@ -141,74 +210,7 @@ export default class configBody extends Component {
               <Text style={styles.touchableStyle}>Sobre</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            onPress={() => {
-              const userid = firebase.auth().currentUser.uid
-              firebase
-                .firestore()
-                .collection("users")
-                .doc(userid)
-                .collection("conversas")
-                .onSnapshot(querySnapshot => {
-                  querySnapshot.forEach(doc => {
-                    firebase
-                      .firestore()
-                      .collection("users")
-                      .doc(userid)
-                      .collection("conversas")
-                      .doc(doc.id)
-                      .collection("messages")
-                      .onSnapshot(qrySnapshotMsg => {
-                        qrySnapshotMsg.forEach(docMsg => {
-                          firebase
-                            .firestore()
-                            .collection("users")
-                            .doc(userid)
-                            .collection("conversas")
-                            .doc(doc.id)
-                            .collection("messages")
-                            .doc(docMsg.id)
-                            .delete()
-                            .catch(() => {
-                              Alert.alert("Erro na exclusão de mensagens")
-                            })
-                        })
-                      })
-
-                    firebase
-                      .firestore()
-                      .collection("users")
-                      .doc(userid)
-                      .collection("conversas")
-                      .doc(doc.id)
-                      .delete()
-                      .catch(() => {
-                        Alert.alert("Erro na exclusão de Conversas")
-                      })
-                  })
-                })
-
-              firebase
-                .firestore()
-                .collection("users")
-                .doc(userid)
-                .delete()
-                .catch(() => {
-                  Alert.alert("Erro na exclusão de usuários")
-                })
-              firebase
-                .storage()
-                .ref(`profile_pics/${userid}`)
-                .delete()
-                .catch(() => {
-                  Alert.alert("Erro na exclusão de fotos")
-                })
-
-              firebase.auth().currentUser.delete()
-              firebase.auth().signOut()
-              navigation.navigate("AuthScreen")
-            }}
-          >
+          <TouchableOpacity onPress={() => this.deleteUser()}>
             <Text style={styles.touchableStyleExit}>Excluir Conta</Text>
           </TouchableOpacity>
         </ScrollView>
