@@ -95,7 +95,7 @@ export default class configBody extends Component {
         Alert.alert("Erro na exclusão de fotos")
       })
 
-    firebase.auth().currentUser.delete()
+    firebase.auth().signOut()
 
     navigation.navigate("AuthScreen")
   }
@@ -209,7 +209,22 @@ export default class configBody extends Component {
               <Text style={styles.touchableStyle}>Sobre</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() => this.deleteUser()}>
+          <TouchableOpacity
+            onPress={() =>
+              Alert.alert(
+                "Confirmação",
+                "Deseja mesmo excluir sua conta?",
+                [
+                  { text: "Sim", onPress: () => this.deleteUser() },
+                  {
+                    text: "Não",
+                    style: "cancel"
+                  }
+                ],
+                { cancelable: false }
+              )
+            }
+          >
             <Text style={styles.touchableStyleExit}>Excluir Conta</Text>
           </TouchableOpacity>
         </ScrollView>
