@@ -17,6 +17,7 @@ import EditPerfil from "~/Screens/EditPerfil/editperfil"
 import Languages from "~/Screens/Languages/languages"
 import About from "~/Screens/About/about"
 import { Icon } from "react-native-elements"
+import Feedback from "./Screens/Feedback/feedback"
 
 const tabBarNavigator = createMaterialTopTabNavigator(
   {
@@ -92,7 +93,10 @@ const HomeStackNavigator = createStackNavigator(
       }
     },
     PreviewImage: {
-      screen: PreviewImage
+      screen: PreviewImage,
+      navigationOptions: {
+        header: null
+      }
     },
 
     LanguagesScreen: {
@@ -125,6 +129,12 @@ const HomeStackNavigator = createStackNavigator(
       navigationOptions: {
         header: null
       }
+    },
+    FeedbackScreen: {
+      screen: Feedback,
+      navigationOptions: {
+        header: null
+      }
     }
   },
   {
@@ -148,7 +158,10 @@ const authStackNavigator = createStackNavigator(
       }
     },
     PreviewImage: {
-      screen: PreviewImage
+      screen: PreviewImage,
+      navigationOptions: {
+        header: null
+      }
     },
     VerificationScreen: {
       screen: Verification,
