@@ -303,7 +303,7 @@ export default class Conversas extends Component {
               style={styles.iconName}
               onPress={this.handleEditName}
             >
-              <Icon name="create" iconStyle={{ color: "#616161" }} />
+              <Icon name="create" iconStyle={{ color: "#007AFF" }} />
             </Touchable>
           </View>
           <View style={styles.editBox}>
@@ -314,7 +314,7 @@ export default class Conversas extends Component {
               style={styles.iconName}
               onPress={this.handleEditEmail}
             >
-              <Icon name="create" iconStyle={{ color: "#616161" }} />
+              <Icon name="create" iconStyle={{ color: "#007AFF" }} />
             </Touchable>
           </View>
           <View style={styles.editBox}>
@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderBottomWidth: 2,
-    borderColor: "#6AC3FB"
+    borderColor: "#007AFF"
   },
   options: {
     marginTop: 25,
