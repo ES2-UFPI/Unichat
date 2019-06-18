@@ -234,8 +234,8 @@ export default class configBody extends Component {
               </View>
             </Touchable>
           </View>
-<<<<<<< HEAD
           <TouchableOpacity
+            style={{ alignSelf: "center" }}
             onPress={() =>
               Alert.alert(
                 "Confirmação",
@@ -251,9 +251,6 @@ export default class configBody extends Component {
               )
             }
           >
-=======
-          <TouchableOpacity style={{ alignSelf: "center" }}>
->>>>>>> 1c777d83cc1a399e4a5e7762f3910c2151cf9366
             <Text style={styles.touchableStyleExit}>Excluir Conta</Text>
           </TouchableOpacity>
         </ScrollView>
