@@ -4,6 +4,7 @@ import { View, StyleSheet, Text } from "react-native"
 import { Avatar, Icon } from "react-native-elements"
 import Touchable from "react-native-platform-touchable"
 import MyPopUpMenu from "~/Components/Chat/chatPopUpMenu"
+import { scale } from "~/Components/responsive"
 
 const chatHeader = props => {
   const { userName, userPhoto, navigation, status, destUser } = props
@@ -14,7 +15,7 @@ const chatHeader = props => {
         <Touchable
           background={Touchable.SelectableBackgroundBorderless()}
           style={styles.back}
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate("Conversas")}
         >
           <View style={styles.backButton}>
             <Icon name="md-arrow-back" color="#00aced" type="ionicon" />
@@ -66,10 +67,10 @@ const styles = StyleSheet.create({
     marginLeft: 10
   },
   userName: {
-    fontSize: 18
+    fontSize: scale(16)
   },
   lastSeen: {
-    fontSize: 10
+    fontSize: scale(10)
   },
   avatar: {
     marginLeft: 10

@@ -2,13 +2,7 @@
 /* eslint-disable camelcase */
 import React, { Component } from "react"
 
-import {
-  View,
-  StyleSheet,
-  StatusBar,
-  BackHandler,
-  ActivityIndicator
-} from "react-native"
+import { View, StyleSheet, BackHandler, ActivityIndicator } from "react-native"
 import {
   ProviderTypes,
   TranslatorConfiguration,
@@ -314,10 +308,8 @@ export default class Conversas extends Component {
       isRefreshing
     } = this.state
     const { navigation } = this.props
-    // firebase.auth().signOut()
     return (
       <View style={styles.container}>
-        <StatusBar backgroundColor="#fff" barStyle="dark-content" />
         <ChatHeader
           userName={destUser.contactName}
           userPhoto={destUser.contactPhoto}
