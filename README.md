@@ -5,6 +5,11 @@
 [![Platform](https://img.shields.io/badge/React%20Native-App-green.svg)]()
 [![Build Status](https://travis-ci.org/ES2-UFPI/Unichat.svg?branch=master)](https://travis-ci.org/ES2-UFPI/Unichat)
 
+## IMPORTANTE
+O desenvolvimento desse projeto vai continuar fora da organização o estado atual do projeto será mantido aqui, para acomponhar o desenvolvimento e novas releases, acesse o seguinte link: https://github.com/netochaves/Unichat
+
+Att, Equipe Devloids.
+
 ## License
 
 Unichat is licensed under the MIT License, please see the [LICENSE](LICENSE) file.
